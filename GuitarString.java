@@ -18,6 +18,11 @@ public class GuitarString
     public GuitarString(double frequency) 
     {
         // TODO: Calculate capacity N, instantiate RingBuffer, enqueue N zeroes
+        int N = (int)Math.ceil(((int)44100/frequency));
+        buffer = new RingBuffer(N);
+        for (int i = 0; i < N; i++){
+            buffer.add(0);
+        }
     }
 
     /**
@@ -26,6 +31,10 @@ public class GuitarString
      */
     public GuitarString(double[] array) 
     {
+        buffer = new RingBuffer(array.length);
+        for (int i = 0; i < array.length; i ++){
+            buffer.add(array[i]);
+        }
         // TODO: Instantiate RingBuffer with length equal to array, enqueue all values
     }
 
@@ -35,6 +44,11 @@ public class GuitarString
      */
     public void pluck() 
     {
+        int size = buffer.size();
+        buffer.clear();
+        for (int i = 0; i < size; i ++){
+            buffer.add(Math.random()-0.5);
+        }
         // TODO: Empty current buffer and refill with random samples between -0.5 and 0.5
     }
 
@@ -47,7 +61,9 @@ public class GuitarString
      */
     public void tic() 
     {
-        // TODO: Perform Karplus-Strong queue update
+        double front = buffer.remove();
+        buffer.add(DECAY_FACTOR*(front+buffer.peek())/2);
+        ticCount++;
     }
 
     /**
@@ -56,7 +72,7 @@ public class GuitarString
     public double sample() 
     {
         // TODO: Return buffer.peek()
-        return 0.0;
+        return buffer.peek();
     }
 
     /**

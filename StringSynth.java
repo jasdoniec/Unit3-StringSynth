@@ -13,7 +13,11 @@ public class StringSynth
         // TODO: Create an array of 37 GuitarString objects.
         // Initialize each string i with frequency: 440.0 * Math.pow(2, (i - 24) / 12.0)
         
+        GuitarString[] strings = new GuitarString[37];
 
+        for (int i = 0; i < 37; i ++){
+            strings[i] = new GuitarString(440.0 * Math.pow(2, (i-24) / 12.0));
+        }
 
         System.out.println("StringSynth is ready! Click on the graphics window and start playing.");
 
@@ -25,17 +29,33 @@ public class StringSynth
             // If true, read character (StdDraw.nextKeyTyped()) and find its index in KEYBOARD.
             // If index is valid (>= 0), pluck the corresponding string in your array.
 
+            if (StdDraw.hasNextKeyTyped())
+            {
+                int index = KEYBOARD.indexOf(StdDraw.nextKeyTyped());
+                if (index >= 0){
+                    strings[index].pluck();
+                }
+            }
 
             // TODO: Step 2 - Compute superposition
             // Calculate the sum of sample() across all 37 guitar strings.
+            double sum = 0.0;
 
+            for (int i = 0; i < strings.length; i++){
+                sum += strings[i].sample();
+            }
 
             // TODO: Step 3 - Play audio sample
             // Send the total sample sum to StdAudio.play()
 
+            StdAudio.play(sum);
 
             // TODO: Step 4 - Advance physics simulation
             // Call tic() on all 37 guitar strings.
+
+            for (int i = 0; i < strings.length; i ++){
+                strings[i].tic();
+            }
 
         }
     }

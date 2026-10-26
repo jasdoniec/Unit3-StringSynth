@@ -18,6 +18,10 @@ public class RingBuffer
      */
     public RingBuffer(int capacity)
     {
+        data = new double[capacity];
+        front = 0;
+        rear = -1;
+        size = 0;
         // TODO: Initialize array of size capacity, front = 0, rear = -1, size = 0
     }
 
@@ -25,19 +29,19 @@ public class RingBuffer
     {
         // TODO: Return current number of items in buffer
         // You can use the size variable instead of calculating from front and rear
-        return 0;
+        return size;
     }
     
     public boolean isEmpty()
     {
         // TODO: Return true if buffer is empty
-        return false;
+        return size==0;
     }
     
     public boolean isFull()
     {
         // TODO: Return true if buffer capacity is reached (size == capacity)
-        return false;
+        return size == data.length;
     }
     
     /**
@@ -46,6 +50,15 @@ public class RingBuffer
      */
     public void add(double value)
     {
+        if (isFull()){
+            throw new RuntimeException();
+        }
+
+        rear++;
+        rear%=data.length;
+
+        data[rear] = value;
+        size ++;
         // TODO: Enqueue value at rear, advance rear modulo capacity, increment size
     }
     
@@ -55,8 +68,10 @@ public class RingBuffer
      */
     public double peek()
     {
-        // TODO: Return sample at front index
-        return 0.0;
+        if (isEmpty()){
+            throw new QueueUnderflowException();
+        }
+        return data[front];
     }
     
     /**
@@ -65,8 +80,21 @@ public class RingBuffer
      */
     public double remove()
     {
+        double out = peek();
+
+        front ++;
+        front %= data.length;
+
+        size --;
+
         // TODO: Dequeue sample from front, advance front modulo capacity, decrement size
-        return 0.0;
+        return out;
+    }
+
+    public void clear(){
+        front = 0;
+        rear = -1;
+        size = 0;
     }
     
     /**
